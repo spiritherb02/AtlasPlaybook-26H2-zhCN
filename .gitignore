@@ -1,0 +1,15 @@
+# 编译产物与临时文件
+__pycache__/
+*.py[cod]
+*.orig-backup
+repo-build/
+
+# 大文件通过 Release 分发，不进 Git 历史
+dist/*.apbx
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
