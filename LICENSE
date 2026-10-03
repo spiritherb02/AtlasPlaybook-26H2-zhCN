@@ -20,10 +20,15 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----
+--------------------------------------------------------------------------------
+适用范围说明
 
-本仓库中的补丁脚本（scripts/）采用 MIT 许可。
+本 MIT 许可适用于 scripts/ 目录下的原创补丁工具：
+  - scripts/atlas_zh_patch.py
+  - scripts/apbx_tool.py
+  - scripts/verify_atlas.py
 
-仓库内分发的 AtlasPlaybook 修改版来源于 Atlas-OS/Atlas 项目，该项目采用
-GNU General Public License v3.0 (GPL-3.0) 许可，其衍生作品同样受 GPL-3.0 约束。
-详见 https://github.com/Atlas-OS/Atlas/blob/main/LICENSE
+本仓库分发的 AtlasPlaybook 修改版（dist/*.apbx）来源于上游 Atlas-OS/Atlas 项目，
+该项目采用 GNU General Public License v3.0 (GPL-3.0)。
+该修改版同样以 GPL-3.0 分发，许可证全文见 licenses/GPL-3.0.txt。
+详细的归属与许可说明见 ATTRIBUTION.md。

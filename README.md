@@ -1,6 +1,13 @@
 # AtlasPlaybook 26H2 简体中文汉化版
 
+> **本仓库是对 [Atlas-OS/Atlas](https://github.com/Atlas-OS/Atlas) 的
+> 非官方简体中文本地化与兼容性补丁，遵循上游 GPL-3.0 许可。**
+> 与 Atlas 团队、Ameliorated LLC 均无隶属关系。详见 [ATTRIBUTION.md](ATTRIBUTION.md)。
+
 AtlasOS Playbook v0.5.0-hotfix 的**简体中文汉化 + Windows 11 26H2 (build 26300) 构建号适配**版本。
+
+上游原版：<https://github.com/Atlas-OS/Atlas/releases/tag/0.5.0-hotfix> ·
+官网 <https://atlasos.net>
 
 原版 AtlasOS Playbook 的 `SupportedBuilds` 只写了 `26100`(24H2) / `26200`(25H2)，
 在 26H2 (build 26300) 上会被 AME Wizard 拒绝：
@@ -14,6 +21,26 @@ This Windows build is not supported by this Playbook.
 1. **构建号适配** — 在 `SupportedBuilds` 中追加 `26300`，让 26H2 通过校验。
 2. **界面汉化** — 把配置向导里的文案翻译成简体中文（选项内部标识 `<Name>` 保持英文不动，
    因此所有功能行为与原版完全一致）。
+
+## 本仓库改了什么（仅为 `playbook.conf`）
+
+| 改动 | 说明 |
+|---|---|
+| 追加构建号 | `<SupportedBuilds>` 增加 `<string>26300</string>` |
+| 界面汉化 | 24 处纯展示文案译为简体中文（`Text` / `Title` / `Description` 等） |
+
+**未改动**：所有 `<Name>` 选项标识、全部脚本与配置文件、图标、壁纸、软件包，
+以及 AME Wizard 本体。逐条比对确认 543 个归档条目名称与顺序与原版一致，
+逐条解密 + CRC32 校验零失败，唯一差异文件为 `playbook.conf`。
+
+## 上游引用
+
+本项目基于以下上游作品，版权归原作者所有：
+
+- **AtlasOS** — Atlas 团队 · <https://github.com/Atlas-OS/Atlas> · GPL-3.0
+- **AME Wizard** — Ameliorated LLC · <https://ameliorated.io> · 专有
+  （本仓库不包含、不修改 AME Wizard）
+
 
 ---
 
@@ -118,8 +145,24 @@ python scripts/verify_atlas.py
 
 ## 许可与声明
 
-- 本项目是对 [Atlas-OS/Atlas](https://github.com/Atlas-OS/Atlas) 官方 Playbook 的
-  **非官方本地化与兼容性补丁**，遵循原项目 **GPL-3.0** 许可。
-- AtlasOS 由 Atlas 团队开发，AME Wizard 由 Ameliorated LLC 开发，
-  本项目与二者均无隶属关系，未修改 AME Wizard 本体。
-- 使用非官方构建号存在风险，请自行评估。作者不对任何数据丢失或系统损坏负责。
+本仓库包含两种许可，请区分使用：
+
+| 内容 | 许可 | 说明 |
+|---|---|---|
+| `dist/*.apbx`（Playbook 修改版） | **GPL-3.0** | 上游 AtlasOS 采用 GPL-3.0，衍生作品同样以 GPL-3.0 分发。全文见 [`licenses/GPL-3.0.txt`](licenses/GPL-3.0.txt) |
+| `scripts/*.py`（本仓库原创工具） | **MIT** | 仅处理 `.apbx` 归档格式，不含上游代码。全文见 [`LICENSE`](LICENSE) |
+
+- 本仓库是对 [Atlas-OS/Atlas](https://github.com/Atlas-OS/Atlas) 的**非官方本地化与兼容性补丁**，
+  未修改 GPL-3.0 条款，未添加额外限制。
+- 完整对应源码：官方源码见上游仓库；本仓库的全部改动以补丁脚本形式完整公开于
+  [`scripts/`](scripts/)，可据此从官方原版复现本修改版。
+- **AtlasOS** / **AME Wizard** / **Windows** 分别为 Atlas 团队、Ameliorated LLC、
+  Microsoft Corporation 的标识或注册商标。本仓库与三者**均无隶属或背书关系**。
+- 详细的归属、改动范围与许可义务说明见 [`ATTRIBUTION.md`](ATTRIBUTION.md)。
+
+## 免责声明
+
+- Windows 11 **26H2（build 26300）不属于 Atlas 官方支持的构建号**，属于非支持配置，请自行评估风险。
+- AtlasOS **没有官方卸载方式**，回退需要重新安装 Windows。操作前请务必备份数据。
+- 作者不对任何数据丢失或系统损坏承担责任。
+

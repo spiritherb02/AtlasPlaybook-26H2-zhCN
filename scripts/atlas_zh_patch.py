@@ -5,6 +5,16 @@ Atlas Playbook v0.5.0 汉化 + 26H2 适配 补丁脚本
 把 playbook.conf 里的界面文案翻译成简体中文，并在 SupportedBuilds 追加构建号。
 选项名（<Name>）、图标名（Icon）、文件名（FileName）、注册表值一律不动。
 
+------------------------------------------------------------------
+归属与许可
+  上游作品：AtlasOS Playbook v0.5.0-hotfix
+            Copyright (C) Atlas 团队  https://github.com/Atlas-OS/Atlas
+            Licensed under GNU General Public License v3.0 (GPL-3.0)
+  本脚本：  仅为处理 .apbx 归档格式的原创工具，不含上游代码，采用 MIT 许可。
+            但对上游作品的处理结果（产物 apbx）仍受 GPL-3.0 约束。
+  详见仓库根目录 ATTRIBUTION.md 与 licenses/GPL-3.0.txt。
+------------------------------------------------------------------
+
 用法：
     python atlas_zh_patch.py <源.apbx> <输出.apbx> [构建号 ...]
     python atlas_zh_patch.py 原.apbx 输出.apbx 26300
