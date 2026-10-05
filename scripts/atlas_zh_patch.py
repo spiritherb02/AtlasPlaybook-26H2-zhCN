@@ -5,6 +5,12 @@ Atlas Playbook v0.5.0 汉化 + 26H2 适配 补丁脚本
 把 playbook.conf 里的界面文案翻译成简体中文，并在 SupportedBuilds 追加构建号。
 选项名（<Name>）、图标名（Icon）、文件名（FileName）、注册表值一律不动。
 
+界面文案在 playbook.conf 里有两种存法，两种都要翻：
+  1) 属性形式：  <TopLine Text="..."/>  <RadioPage Description="..."/>
+  2) 元素形式：  <Text>...</Text>  <Details>...</Details>
+                 <Description><![CDATA[...]]></Description>  <ProgressText>...</ProgressText>
+早期版本只处理了第 1 种，导致「页面标题翻译了、下面的选项还是英文」。
+
 ------------------------------------------------------------------
 归属与许可
   上游作品：AtlasOS Playbook v0.5.0-hotfix
@@ -130,6 +136,7 @@ def write_zip(entries, out_path):
 
 # ---------------------------------------------------------------- 汉化词表
 # 只翻译显示文本；<Name>/<FileName>/Icon/颜色/链接 不动。
+# 这里的英文 key 必须与 playbook.conf 原文逐字符一致（含大小写与标点）。
 TEXT_MAP = {
     # OOBE 卡片
     "Performance": "性能",
@@ -193,39 +200,79 @@ TEXT_MAP = {
 
     # playbook 元信息
     "AtlasOS Playbook for Windows 11": "适用于 Windows 11 的 AtlasOS Playbook",
+    "An open and lightweight modification to Windows, designed to optimize performance, privacy and security.":
+        "一款开放、轻量的 Windows 修改版，着眼于性能、隐私与安全优化。",
+    "Atlas is currently installing software, copying its configuration folders, and tweaking Windows. If you are not already, we recommend following our documentation.":
+        "Atlas 正在安装软件、复制配置文件夹并调整 Windows。若尚未开始，建议先阅读官方文档。",
 }
 
-# 需要保留英文的浏览器品牌名，避免误翻
+# CDATA 长文本里的整句替换（前后带字符画框，无法整段精确匹配）。
+SUBSTR_MAP = [
+    ("Read the Atlas documentation first.", "请先阅读 Atlas 官方文档。"),
+    ("Atlas makes your computer snappier and more private with lots of usability improvements.",
+     "Atlas 让你的电脑更快、更私密，并带来大量易用性改进。"),
+]
+
+# 需要保留英文的品牌名，避免误翻
 KEEP_EXACT = {"Brave", "LibreWolf", "Firefox", "Chrome", "Atlas"}
+
+# 元素形式的显示文本标签
+ELEM_TAGS = ("Text", "Title", "ShortDescription", "Details", "ProgressText", "Description")
+# 属性形式的显示文本属性
+ATTR_NAMES = ("Text", "Title", "Description")
 
 
 def translate(conf):
-    """按 XML 属性精确替换显示文本，避免动到 Name/FileName/Icon。"""
+    """按 XML 结构精确替换显示文本，属性形式与元素形式都覆盖。
+
+    只动显示文案，绝不碰 <Name>/<FileName>/Icon/颜色/链接，
+    因此汉化版的功能行为与原版完全一致。
+    """
     hits = []
+
+    def spell(val):
+        """返回译文；无需翻译或未收录时返回 None。"""
+        if val.strip() in KEEP_EXACT:
+            return None
+        if val in TEXT_MAP:
+            return TEXT_MAP[val]
+        # 长文本（含字符画框）走整句替换
+        out = val
+        for en, zh in SUBSTR_MAP:
+            if en in out:
+                out = out.replace(en, zh)
+        return out if out != val else None
+
+    def record(old, new):
+        hits.append((old, new))
 
     def repl_attr(m):
         attr, val = m.group(1), m.group(2)
-        if attr in ("Text", "Title", "Description"):
-            if val in KEEP_EXACT:
-                return m.group(0)
-            if val in TEXT_MAP:
-                hits.append((val, TEXT_MAP[val]))
-                return '%s="%s"' % (attr, TEXT_MAP[val])
-        return m.group(0)
+        new = spell(val)
+        if new is None:
+            return m.group(0)
+        record(val, new)
+        return '%s="%s"' % (attr, new)
 
-    # 匹配 attr="value"（属性值内无引号）
-    conf2 = re.sub(r'\b(Text|Title|Description)="([^"]*)"', repl_attr, conf)
-
-    # <ShortDescription> / <Details> 等元素文本
     def repl_elem(m):
         tag, inner = m.group(1), m.group(2)
-        if inner in TEXT_MAP:
-            hits.append((inner, TEXT_MAP[inner]))
-            return "<%s>%s</%s>" % (tag, TEXT_MAP[inner], tag)
-        return m.group(0)
+        # <![CDATA[...]]> 外壳剥掉后再匹配，命中则保留 CDATA 形式写出
+        is_cdata = inner.startswith("<![CDATA[") and inner.endswith("]]>")
+        raw = inner[9:-3] if is_cdata else inner
+        new = spell(raw)
+        if new is None:
+            return m.group(0)
+        record(raw, new)
+        payload = "<![CDATA[%s]]>" % new if is_cdata else new
+        return "<%s>%s</%s>" % (tag, payload, tag)
 
-    conf2 = re.sub(r'<(ShortDescription|Details|ProgressText)>(.*?)</\1>', repl_elem, conf2, flags=re.S)
-    return conf2, hits
+    # 1) 属性形式：Text="..." / Title="..." / Description="..."
+    conf = re.sub(r'\b(%s)="([^"]*)"' % "|".join(ATTR_NAMES), repl_attr, conf)
+
+    # 2) 元素形式：<Text>选项文案</Text>、<Details>…</Details> 等
+    conf = re.sub(r'<(%s)>(.*?)</\1>' % "|".join(ELEM_TAGS), repl_elem, conf, flags=re.S)
+
+    return conf, hits
 
 
 def main():

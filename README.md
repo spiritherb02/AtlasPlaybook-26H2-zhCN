@@ -27,7 +27,19 @@ This Windows build is not supported by this Playbook.
 | 改动 | 说明 |
 |---|---|
 | 追加构建号 | `<SupportedBuilds>` 增加 `<string>26300</string>` |
-| 界面汉化 | 24 处纯展示文案译为简体中文（`Text` / `Title` / `Description` 等） |
+| 界面汉化 | 40 处纯展示文案译为简体中文（属性形式 + 元素形式，见下） |
+
+`playbook.conf` 里的界面文案有两种存法，两种都必须翻，否则会出现
+「**页面的提问翻译了，下面的选项还是英文**」：
+
+| 形式 | 例子 | 说明 |
+|---|---|---|
+| 属性 | `<TopLine Text="…"/>`、`<RadioPage Description="…">` | 页面标题 / 说明 / 上下提示行 |
+| 元素 | `<Text>…</Text>`、`<Details>…</Details>`、`<ProgressText>…</ProgressText>`、`<Description><![CDATA[…]]></Description>` | 单选 / 勾选 / 浏览器选项文案、卡片副标题、安装进度文案 |
+
+v1 的脚本只正则匹配了 `attr="value"`，把元素形式的 `<Text>` 全部漏掉了，
+于是 13 条选项（Defender、缓解措施、自动更新、休眠、内核隔离、截图工具、
+Edge、浏览器、工具箱…）留在英文。v2 已按 XML 结构同时覆盖两种形式。
 
 **未改动**：所有 `<Name>` 选项标识、全部脚本与配置文件、图标、壁纸、软件包，
 以及 AME Wizard 本体。逐条比对确认 543 个归档条目名称与顺序与原版一致，
@@ -48,10 +60,18 @@ This Windows build is not supported by this Playbook.
 
 | 文件 | 说明 |
 |---|---|
-| [`AtlasPlaybook_v0.5.0-26H2-zhCN.apbx`](dist/AtlasPlaybook_v0.5.0-26H2-zhCN.apbx) | 汉化 + 26H2 适配版（直接用这个） |
+| [`AtlasPlaybook_v0.5.0-26H2-zhCN.apbx`](https://github.com/spiritherb02/AtlasPlaybook-26H2-zhCN/releases/latest/download/AtlasPlaybook_v0.5.0-26H2-zhCN.apbx) | 汉化 + 26H2 适配版（直接用这个，约 48 MB） |
+| [`Releases`](https://github.com/spiritherb02/AtlasPlaybook-26H2-zhCN/releases) | 版本列表与校验值 |
 | `scripts/` | 可复现的补丁脚本，支持任意构建号 |
 
-> 48 MB 的 apbx 通过 Release 或直接下载提供，避免 Git 仓库体积膨胀。
+> 48 MB 的 apbx 通过 Release 提供，避免 Git 仓库体积膨胀。
+
+## 更新记录
+
+- **v2（当前）** — 修复选项文案未汉化：`<Text>` 等元素形式的显示文本此前被漏掉，
+  13 条选项（及 `<Details>` / `<ProgressText>` / 卡片 `<Description>`）现全部为简体中文。
+  汉化条目 24 → 40 处。
+- v1 — 首次发布：追加构建号 26300 + 属性形式文案汉化。
 
 ## 使用方法
 

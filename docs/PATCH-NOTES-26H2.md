@@ -81,8 +81,11 @@ playbook.conf 里的 `Requirements`：
 
 ## 脚本
 
-`atlas_build26300_patch.py` 可复用，支持追加任意构建号：
+本文件记录的是最初的构建号适配原型，当时的脚本名为 `atlas_build26300_patch.py`，
+现已并入仓库正式脚本 `scripts/apbx_tool.py`（只改构建号）与
+`scripts/atlas_zh_patch.py`（构建号 + 汉化），均支持追加任意构建号：
 
 ```bash
-python atlas_build26300_patch.py 原.apbx 输出.apbx 26300
+python scripts/apbx_tool.py     原.apbx 输出.apbx 26300   # 只追加构建号
+python scripts/atlas_zh_patch.py 原.apbx 输出.apbx 26300   # 追加构建号 + 汉化
 ```
